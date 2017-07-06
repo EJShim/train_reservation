@@ -11,7 +11,6 @@ browser = webdriver.Chrome('chromedriver')
 browser.get("http://www.letskorail.com/korail/com/login.do")
 
 #ID : 1670766294
-#PW : tladmdwns!23
 #LOGIN
 browser.find_element_by_id("txtMember").send_keys("1670766294")
 browser.find_element_by_id("txtPwd").send_keys("password")
