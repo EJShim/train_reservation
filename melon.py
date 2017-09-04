@@ -42,7 +42,7 @@ while not available:
 
     availableTickets = browser.find_elements_by_xpath("//*[name()='rect' and not(@fill='#dddddd') and not(@fill='none')]")
 
-    if len(availableTickets) <= 1:
+    if len(availableTickets) < 1:
         attemp += 1
         print("no tickets available.. close window, attempt",attemp)
         browser.close()
