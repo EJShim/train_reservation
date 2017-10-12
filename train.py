@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -9,14 +10,14 @@ browser = webdriver.Chrome('chromedriver')
 INPUT_ID = "1670766294"
 INPUT_PW = "PW"
 
-INPUT_DEP = "청량리"
-INPUT_DES = "가평"
+INPUT_DEP = "전주"
+INPUT_DES = "서울"
 
 YEAR = 2017
-MONTH = 7
-DATE = 7
-HOUR_MIN = 18
-HOUR_MAX = 20
+MONTH = 10
+DATE = 6
+HOUR_MIN = 17
+HOUR_MAX = [18, 00]
 
 #Korail Login
 browser.get("http://www.letskorail.com/korail/com/login.do")
@@ -33,8 +34,10 @@ browser.find_element_by_xpath("//img[@alt='확인']").click()
 browser.get("http://www.letskorail.com/ebizprd/EbizPrdTicketpr21100W_pr21110.do")
 
 
-#기차종료 - ITX
-browser.find_element_by_name("selGoTrainRa").click()
+#KTX = 1
+#ITX = 2
+radio = browser.find_elements_by_name("selGoTrainRa")
+radio[1].click()
 
 #인원
 browser.find_element_by_xpath("//option[@value='1']").click()
@@ -61,11 +64,9 @@ browser.find_element_by_xpath(hourX).click()
 
 
 
-browser.find_element_by_xpath("//input[@title='ITX-청춘']").click()
-
-
 # Find Ticket
-browser.find_element_by_xpath("//a[@href='javascript:inqSchedule()']/img").click()
+# browser.find_element_by_xpath("//a[@href='javascript:inqSchedule()']/img").click()
+browser.execute_script("inqSchedule();")
 
 
 
@@ -73,22 +74,44 @@ available = False
 
 
 while not available:
-    WebDriverWait(browser, 3).until(EC.presence_of_element_located(("id", "divResult")))
+    try:
+        WebDriverWait(browser, 3).until(EC.presence_of_element_located(("id", "divResult")))
+    except TimeoutException:
+        WebDriverWait(browser, 3).until(EC.presence_of_element_located(("xpath", "//a[@class='btn_blue_ang']")))
+        browser.execute_script("history.go(-1);")
+        print("History")
+        continue
 
-    reserveButtons = browser.find_elements_by_xpath("//tr[@class='']/td[6]/a/img[@alt='예약하기']")
+    reserveButtons = browser.find_elements_by_xpath("//td/a/img[@alt='예약하기']")
     count = len(reserveButtons)
     print("Available : ", count)
     if count == 0:
         #다시 조회
-        browser.execute_script("inqSchedule();")
+        try: browser.execute_script("inqSchedule();")
+        except Exception as e:
+            WebDriverWait(browser, 3).until(EC.presence_of_element_located(("xpath", "//a[@class='btn_blue_ang']")))
+            browser.execute_script("history.go(-1);")
+            print("History", e)
+            continue
 
     else:
+        
         earlyTime = reserveButtons[0].find_element_by_xpath("../../../td[3]").text.encode('utf-8')
+        
         earlyTime = str(earlyTime).split('\\n')
-        earlyTime = earlyTime[1].split(':')[0]
+        earlyMin = earlyTime[1].split(':')[1]
+        earlyMin = earlyMin[:2]
+        earlyTime = earlyTime[1].split(':')[0]        
 
-        if int(earlyTime) < HOUR_MAX:
-            print("Ticket Available : ", earlyTime)
+        if int(earlyTime) < HOUR_MAX[0]:
+            print("Ticket Available : ", earlyTime, earlyMin)
+            # reserveButtons[0].click()
+            script = str(reserveButtons[0].find_element_by_xpath("..").get_attribute("href")).split(':')[1]
+            browser.execute_script(script)
+
+            available = True
+        elif int(earlyTime) == HOUR_MAX[0] and int(earlyMin) < HOUR_MAX[1]:
+            print("Ticket Available : ", earlyTime, earlyMin)
             # reserveButtons[0].click()
             script = str(reserveButtons[0].find_element_by_xpath("..").get_attribute("href")).split(':')[1]
             browser.execute_script(script)
