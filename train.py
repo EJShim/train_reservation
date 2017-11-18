@@ -8,16 +8,16 @@ from selenium.common.exceptions import TimeoutException
 browser = webdriver.Chrome('chromedriver')
 
 INPUT_ID = "1670766294"
-INPUT_PW = "PW"
+INPUT_PW = ""
 
-INPUT_DEP = "전주"
-INPUT_DES = "서울"
+INPUT_DEP = "용산"
+INPUT_DES = "가평"
 
 YEAR = 2017
-MONTH = 10
-DATE = 6
-HOUR_MIN = 17
-HOUR_MAX = [18, 00]
+MONTH = 11
+DATE = 18
+HOUR_MIN = 19
+HOUR_MAX = [20, 50]
 
 #Korail Login
 browser.get("http://www.letskorail.com/korail/com/login.do")
@@ -25,8 +25,12 @@ browser.get("http://www.letskorail.com/korail/com/login.do")
 #ID : 1670766294
 #LOGIN
 browser.find_element_by_id("txtMember").send_keys(INPUT_ID)
-browser.find_element_by_id("txtPwd").send_keys(INPUT_PW)
-browser.find_element_by_xpath("//img[@alt='확인']").click()
+# browser.find_element_by_id("txtPwd").send_keys(INPUT_PW)
+# browser.find_element_by_xpath("//img[@alt='확인']").click()
+
+# reserveButtons = browser.find_elements_by_xpath()
+
+WebDriverWait(browser, 180).until(EC.presence_of_element_located(("xpath", "//img[@alt='승차권예매']")))
 
 
 
@@ -37,7 +41,7 @@ browser.get("http://www.letskorail.com/ebizprd/EbizPrdTicketpr21100W_pr21110.do"
 #KTX = 1
 #ITX = 2
 radio = browser.find_elements_by_name("selGoTrainRa")
-radio[1].click()
+radio[2].click()
 
 #인원
 browser.find_element_by_xpath("//option[@value='1']").click()
