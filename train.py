@@ -10,14 +10,14 @@ browser = webdriver.Chrome('chromedriver')
 INPUT_ID = "1670766294"
 INPUT_PW = ""
 
-INPUT_DEP = "용산"
-INPUT_DES = "가평"
+INPUT_DEP = "전주"
+INPUT_DES = "용산"
 
-YEAR = 2017
-MONTH = 11
-DATE = 18
-HOUR_MIN = 19
-HOUR_MAX = [20, 50]
+YEAR = 2018
+MONTH = 2
+DATE = 17
+HOUR_MIN = 9
+HOUR_MAX = [20, 30]
 
 #Korail Login
 browser.get("http://www.letskorail.com/korail/com/login.do")
@@ -41,7 +41,7 @@ browser.get("http://www.letskorail.com/ebizprd/EbizPrdTicketpr21100W_pr21110.do"
 #KTX = 1
 #ITX = 2
 radio = browser.find_elements_by_name("selGoTrainRa")
-radio[2].click()
+radio[1].click()
 
 #인원
 browser.find_element_by_xpath("//option[@value='1']").click()
