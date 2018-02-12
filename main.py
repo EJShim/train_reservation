@@ -168,7 +168,7 @@ class Dialog(QDialog):
                 'train':1
             }
 
-        self.locations = ['서울', '가평', '전주']
+        self.locations = ['서울', '가평', '전주', '광명', '익산']
         self.trains = ['전체', 'KTX', 'ITX']
         self.createFormGroupBox()
  
