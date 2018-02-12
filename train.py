@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-def run(INPUT_ID, INPUT_DEP, INPUT_DES, YEAR, MONTH, DATE, HOUR_MIN, HOUR_MAX):
+def run(INPUT_ID, INPUT_DEP, INPUT_DES, TRAIN, YEAR, MONTH, DATE, HOUR_MIN, HOUR_MAX):
     browser = webdriver.Chrome('chromedriver')
 
     #Korail Login
@@ -30,7 +30,7 @@ def run(INPUT_ID, INPUT_DEP, INPUT_DES, YEAR, MONTH, DATE, HOUR_MIN, HOUR_MAX):
     #KTX = 1
     #ITX = 2
     radio = browser.find_elements_by_name("selGoTrainRa")
-    radio[1].click()
+    radio[TRAIN].click()
 
     #인원
     browser.find_element_by_xpath("//option[@value='1']").click()
