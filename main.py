@@ -117,14 +117,14 @@ class thread_reservation(QThread):
                 earlyTime = earlyTime[1].split(':')[0]        
 
                 if int(earlyTime) < self.HOUR_MAX[0]:
-                    print("Ticket Available : ", earlyTime, earlyMin)
+                    self.log("Ticket Available : ", earlyTime, earlyMin)
                     # reserveButtons[0].click()
                     script = str(reserveButtons[0].find_element_by_xpath("..").get_attribute("href")).split(':')[1]
                     browser.execute_script(script)
 
                     available = True
                 elif int(earlyTime) == self.HOUR_MAX[0] and int(earlyMin) < self.HOUR_MAX[1]:
-                    print("Ticket Available : ", earlyTime, earlyMin)
+                    self.log("Ticket Available : ", earlyTime, earlyMin)
                     # reserveButtons[0].click()
                     script = str(reserveButtons[0].find_element_by_xpath("..").get_attribute("href")).split(':')[1]
                     browser.execute_script(script)
@@ -136,21 +136,26 @@ class thread_reservation(QThread):
         #Handle Alert
         try:
             wait = WebDriverWait(browser, 3).until(EC.alert_is_present())
-
             alert = browser.switch_to.alert
             alert.accept()
-            print("Alert Handle")
+            self.log("Alert Handle")
         except TimeoutException:
-            print("no alert")
+            self.log("no alert")
 
         try:
             wait = WebDriverWait(browser, 3).until(EC.alert_is_present())
-
             alert = browser.switch_to.alert
             alert.accept()
-            print("Alert Handle")
+            self.log("Alert Handle")
         except TimeoutException:
-            print("no alert")
+            self.log("no alert")
+
+        try:
+            WebDriverWait(browser, 3).until(EC.presence_of_element_located(("xpath", "//a[@class='btn_blue_ang']")))
+            browser.execute_script("f_close();")
+        except TimeoutException:
+            self.log("asdfasdf")
+            
         
 
 class Dialog(QDialog):    
@@ -168,7 +173,7 @@ class Dialog(QDialog):
                 'train':1
             }
 
-        self.locations = ['서울', '가평', '전주', '광명', '익산']
+        self.locations = ['서울', '청량리', '가평', '전주', '광명', '익산']
         self.trains = ['전체', 'KTX', 'ITX']
         self.createFormGroupBox()
  
