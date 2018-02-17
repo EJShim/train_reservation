@@ -8,6 +8,7 @@ from style import styleData
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtMultimedia import QSound
 import sys
 import json
 import datetime
@@ -15,6 +16,7 @@ import datetime
 
 class thread_reservation(QThread):
     onprogress = pyqtSignal(str)
+    alarm = pyqtSignal()
 
     def __init__(self,  INPUT_ID, INPUT_DEP, INPUT_DES, TRAIN, YEAR, MONTH, DAY, HOUR_MIN, HOUR_MAX, parent=None):
         super().__init__()
@@ -37,7 +39,8 @@ class thread_reservation(QThread):
             log += " " + str(word)
         self.onprogress.emit(log)
 
-    def run(self):        
+    def run(self):
+
         browser = webdriver.Chrome('chromedriver')
         #Korail Login
         browser.get("http://www.letskorail.com/korail/com/login.do")
@@ -155,13 +158,14 @@ class thread_reservation(QThread):
             browser.execute_script("f_close();")
         except TimeoutException:
             self.log("asdfasdf")
+
+        self.alarm.emit()
             
         
 
 class Dialog(QDialog):    
     def __init__(self):
         super(Dialog, self).__init__()
-        
         try:
             with open('tmp_data', 'r') as data:
                 self.data = json.load(data)
@@ -191,6 +195,8 @@ class Dialog(QDialog):
         
  
     def createFormGroupBox(self):
+
+
         self.formGroupBox = QGroupBox()
         layout = QFormLayout()
 
@@ -302,10 +308,14 @@ class Dialog(QDialog):
         # self.run(INPUT_ID, INPUT_DEP, INPUT_DES, TRAIN, YEAR, MONTH, DAY, HOUR_MIN, HOUR_MAX)
         self.reservation_agent = thread_reservation(INPUT_ID, INPUT_DEP, INPUT_DES, TRAIN, YEAR, MONTH, DAY, HOUR_MIN, HOUR_MAX, self)
         self.reservation_agent.onprogress.connect(self.log)
+        self.reservation_agent.alarm.connect(self.alarm)
         self.reservation_agent.start()
         return
+    def alarm(self):        
+        QSound.play('./alarm.wav')
 
     def log(self, *txt):
+                
         log = '\n'
         for word in txt:
             log += " " + str(word)
