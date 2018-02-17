@@ -151,7 +151,7 @@ class thread_reservation(QThread):
             self.log("no alert")
 
         try:
-            WebDriverWait(browser, 3).until(EC.presence_of_element_located(("xpath", "//a[@class='btn_blue_ang']")))
+            WebDriverWait(browser, 3).until(EC.presence_of_element_located(("xpath", "//p[@class='btn_c']")))
             browser.execute_script("f_close();")
         except TimeoutException:
             self.log("asdfasdf")
